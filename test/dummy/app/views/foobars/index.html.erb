@@ -1,0 +1,11 @@
+<%= render partial: "notice", locals: { notice: notice } %>
+
+<h1 class="text-lg font-bold">Foobars</h1>
+
+<div id="foobars">
+  <%= render @foobars %>
+</div>
+
+<div class="mt-10 flex flex-row">
+  <%= link_to "New foobar", new_foobar_path, class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-700 border border-green-900 rounded text-sm font-bold mr-4" %>
+</div>

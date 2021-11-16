@@ -1,0 +1,75 @@
+<%= render partial: "notice", locals: { notice: notice } %>
+
+<div class="my-10 border-4 rounded border-black rounded-2xl bg-grey-200 p-4">
+  <p>Current items:</p>
+
+  <%- if foobar.view_state['total'] == 0 %>
+    <p>There are no foobar items yet, please add one by using the buttons below</p>
+  <% else %>
+    <div class="flex flex-row">
+      <%- foobar.view_state['items'].each do |item| %>
+        <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+          <div class="flex flex-row">
+            <p class="w-24 p-3 h-10 bg-green-500 text-gray-700 border border-green-500 rounded text-sm font-bold text-center">
+              <%= item['value'] %>
+            </p>
+            <%= form.hidden_field :action, value: :remove %>
+            <%= form.hidden_field :action_id, value: item['id'] %>
+            <%= form.submit "X", class: "mr-6 p-3 h-10 text-gray-700 rounded text-sm font-bold bg-gray-50 hover:bg-gray-300" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-10 flex flex-row">
+    <div class="border rounded border-black bg-gray-100 p-5 mr-5">
+      <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+        <%= form.hidden_field :action, value: :add_foo %>
+        <%= form.submit "Add a Foo", class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-500 rounded text-sm font-bold" %>
+      <% end %>
+    </div>
+
+    <div class="border rounded border-black bg-gray-100 p-5 mr-5">
+      <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+        <%= form.hidden_field :action, value: :add_bar %>
+        <%= form.submit "Add a Bar", class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-500 rounded text-sm font-bold" %>
+      <% end %>
+    </div>
+
+    <div class="border rounded border-black bg-gray-100 p-5 mr-5">
+      <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+        <%= form.text_field :custom, placeholder: "Custom element", class: "w-40" %>
+        <%= form.hidden_field :action, value: :add_custom %>
+        <%= form.submit "Add custom", class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-500 rounded text-sm font-bold" %>
+      <% end %>
+    </div>
+
+    <%- if foobar.undo? %>
+      <div class="border rounded border-black bg-gray-100 p-5 mr-5">
+        <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+          <%= form.hidden_field :action, value: :undo %>
+          <%= form.submit "Undo: #{foobar.undo_action['type'].capitalize}", class: "p-3 h-10 bg-red-700 text-gray-100 hover:bg-red-500 rounded text-sm font-bold" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%- if foobar.redo? %>
+      <div class="border rounded border-black bg-gray-100 p-5 mr-5">
+        <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+          <%= form.hidden_field :action, value: :redo %>
+          <%= form.submit "Redo: #{foobar.redo_action['type'].capitalize}", class: "p-3 h-10 bg-red-700 text-gray-100 hover:bg-red-500 rounded text-sm font-bold" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%- if foobar.flatten? %>
+      <div class="border rounded border-black bg-gray-100 p-5 ml-16">
+        <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
+          <%= form.hidden_field :action, value: :flatten %>
+          <%= form.submit "Save changes", class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-500 rounded text-sm font-bold" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

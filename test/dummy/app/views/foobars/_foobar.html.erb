@@ -1,0 +1,18 @@
+<div class="w-full border p-3 mb-2 bg-gray-50">
+  <div class="flex flex-row my-3">
+    <%- if foobar.view_state['total'] == 0 %>
+      <p>Empty</p>
+    <% else %>
+      <%- foobar.view_state['items'].each do |item| %>
+        <p class="w-24 p-3 mr-3 h-10 bg-green-500 text-gray-700 border border-green-500 rounded text-sm font-bold text-center">
+          <%= item['value'] %>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div id="<%= dom_id foobar %>" class="mt-10 flex flex-row scaffold_record">
+    <%= link_to "Show foobar #{foobar.id}", foobar, class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-700 border border-green-900 rounded text-sm font-bold mr-4" %>
+    <%= link_to "Edit this foobar", edit_foobar_path(foobar), class: "p-3 h-10 bg-green-900 text-gray-100 hover:bg-green-700 border border-green-900 rounded text-sm font-bold mr-4" %>
+  </div>
+</div>

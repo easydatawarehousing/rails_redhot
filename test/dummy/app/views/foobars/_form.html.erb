@@ -1,0 +1,17 @@
+<%= form_with(model: foobar) do |form| %>
+  <% if foobar.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(foobar.errors.count, "error") %> prohibited this foobar from being saved:</h2>
+
+      <ul>
+        <% foobar.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit "Add a new Foobar", class: "p-3 h-10 bg-red-700 text-gray-100 hover:bg-red-500 border border-red-700 rounded text-sm font-bold" %>
+  </div>
+<% end %>
