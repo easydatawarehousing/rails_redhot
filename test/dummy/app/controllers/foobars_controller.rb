@@ -66,7 +66,10 @@ class FoobarsController < ApplicationController
 
     @foobar.save! if @foobar.changed?
 
-    redirect_back fallback_location: edit_foobar_path(@foobar), notice: notice
+    pp_acts_as_redux
+
+    flash.now.notice = notice if notice.present?
+    render :edit
   end
 
   private
@@ -91,6 +94,23 @@ class FoobarsController < ApplicationController
 
     def do_flatten
       @foobar.flatten! ? 'Saved !' : 'Nothing to save'
+    end
+
+    def pp_acts_as_redux
+      puts '='*80
+      puts "Initial state: #{@foobar.my_redux['initial_state']&.dig('total') || 0} items"
+      pp @foobar.my_redux['initial_state']&.dig('items')
+
+      puts "\nCurrent state: #{@foobar.my_redux['state']&.dig('total') || 0} items"
+      pp @foobar.my_redux['state']&.dig('items')
+
+      puts "\nList of actions:"
+      @foobar.my_redux['actions'].each_with_index do |action, i|
+        puts "#{i == @foobar.my_redux['head'] ? 'HEAD =>' : ' '*7} #{action['type'].ljust(6)} : '#{action['item']}'"
+      end
+
+      puts "\nLast used sequence-id: #{@foobar.my_redux['seq_id']}"
+      puts '='*80
     end
 
     # Use callbacks to share common setup or constraints between actions.

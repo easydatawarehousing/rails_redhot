@@ -1,5 +1,5 @@
-<%- if notice.present? %>
+<%- if flash.notice %>
   <p id="notice" class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 h-10 bg-green-900 text-gray-100 rounded text-sm font-bold">
-    <%= notice %>
+    <%= flash.notice %>
   </p>
 <% end %>
