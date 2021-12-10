@@ -1,7 +1,7 @@
 # RailsRedhot
 __REDux pattern for HOTwire == Redhot__  
-This is a proof of concept that shows how html-over-the-wire combined with the
-redux (flux) pattern radically reduces complexity of software architecture.
+Use this gem to combine html-over-the-wire with the
+redux (flux) pattern to radically reduce complexity of software architecture.
 Applications using (react) redux, especially when combined with
 command-query-responsibility-separation (CQRS) can become very complex
 ([example](https://medium.com/resolvejs/resolve-redux-backend-ebcfc79bbbea)).
@@ -16,7 +16,7 @@ This gem assists in reducing the number of required components down to just four
 
 Common actions (undo, redo, flatten actions to initial state) are provided by this gem.
 Combined with turbo streams these make it easy to create a smooth user experience where
-you save/undo/redo every user interaction.
+you can store/undo/redo every user interaction.
 
 ## Usage
 Create a migration to add a 'text' attribute to a model that should have a redux store.
@@ -86,20 +86,25 @@ rails server
 Open the [application](http://localhost:3000/foobars).
 Click on 'New foobar' 'Add a new foobar' and 'Edit this foobar'.
 
+## Test
+Run:
+
+```bash
+rails test/dummy/test
+```
+
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Remarks
 
-- Developed using Ruby 3.0.2
+- Developed using Ruby 3.0.3
 - This gem is not designed to handle very large lists of actions and state.
   When calling `undo` the state is rebuilt from scratch.
   If the list of actions to process is large this would become slow.
   One would need 'savepoints' that regularly save the state so that the
   current state could be rebuilt from that point.
-- No checking on the size of the text attribute is done
-- There is no testset yet
-- There is no documentation yet
+- No checking on the size of the text attribute used for the store is done
 - Currently only one redux store can be added to a model
 - Redux store code inspired by:
   - https://gist.github.com/eadz/31c87375722397be861a0dbcf7fb7408

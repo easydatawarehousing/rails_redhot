@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module RailsRedhot
+  # Include ActAsRedux module to add redux functionality to Rails
   module ActsAsRedux
     extend ActiveSupport::Concern
 
