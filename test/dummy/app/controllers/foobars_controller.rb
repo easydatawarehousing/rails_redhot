@@ -53,9 +53,9 @@ class FoobarsController < ApplicationController
     when :add_bar
       do_dispatch(:add, 'Bar')
     when :add_custom
-      do_dispatch(:add, foobar_update_action_params[:custom][0..5].capitalize)
+      do_dispatch(:add, foobar_update_action_params[:custom][0..5].strip.capitalize)
     when :remove
-      do_dispatch(:remove, foobar_update_action_params[:action_id])
+      do_dispatch(:remove, foobar_update_action_params[:action_id]&.to_i)
     when :undo
       do_undo
     when :redo
@@ -73,10 +73,7 @@ class FoobarsController < ApplicationController
   end
 
   private
-    def do_dispatch(type, item)
-      value = type == :add ? item.strip
-                           : item&.to_i
-
+    def do_dispatch(type, value)
       if value.present? && @foobar.dispatch!(type: type, item: value)
         'Updated !'
       else

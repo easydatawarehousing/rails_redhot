@@ -1,5 +1,9 @@
 <%= render partial: "notice", locals: { notice: notice } %>
 
+<p>
+  There are currently <%= foobar.view_state['total'] %> items
+</p>
+
 <div class="my-10 border-4 rounded border-black rounded-2xl bg-grey-200 p-4">
   <p>Current items:</p>
 
@@ -11,7 +15,7 @@
         <%= form_with(model: foobar, url: update_action_foobar_path(foobar), method: :put) do |form| %>
           <div class="flex flex-row">
             <p class="w-24 p-3 h-10 bg-green-500 text-gray-700 border border-green-500 rounded text-sm font-bold text-center">
-              <%= item['value'] %>
+              <%= CGI.unescape(item['value']) %>
             </p>
             <%= form.hidden_field :action, value: :remove %>
             <%= form.hidden_field :action_id, value: item['id'] %>

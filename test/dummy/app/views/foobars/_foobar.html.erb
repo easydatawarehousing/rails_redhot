@@ -5,7 +5,7 @@
     <% else %>
       <%- foobar.view_state['items'].each do |item| %>
         <p class="w-24 p-3 mr-3 h-10 bg-green-500 text-gray-700 border border-green-500 rounded text-sm font-bold text-center">
-          <%= item['value'] %>
+          <%= CGI.unescape(item['value']) %>
         </p>
       <% end %>
     <% end %>

@@ -26,7 +26,7 @@ class Foobar < ApplicationRecord
         -> (state, action) {
           case action[:type]&.to_sym
           when :add
-            state[:items] << { id: next_seq_id, value: action[:item] }
+            state[:items] << { id: next_seq_id, value: CGI.escape(action[:item]) }
           when :remove
             state[:items].delete_if do |item|
               item.symbolize_keys!
