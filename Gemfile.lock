@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rails_redhot (0.0.2)
+    rails_redhot (0.1.0)
       rails (~> 7.0.0)
 
 GEM
