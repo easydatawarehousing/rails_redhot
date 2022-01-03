@@ -2,7 +2,7 @@
 
 [0.0.2]: https://github.com/easydatawarehousing/rails_redhot/compare/v0.0.2...v0.1.0
 
-- Documenetation updates
+- Documentation updates
 - Use Rails 7.0.0
 
 # 0.0.2 - December 10, 2021

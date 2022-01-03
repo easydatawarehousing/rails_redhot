@@ -19,7 +19,7 @@ These solutions can become very complex
 scroll down a bit for a full example).
 
 The Hotwire (Html Over The Wire) approach does an excellent job of removing the need
-to build single page apps. Hotwire will be the
+to build single page apps. Hotwire is the
 [default tool](https://world.hey.com/dhh/the-time-is-right-for-hotwire-ecdb9b33)
 for frontend development in Rails 7.
 However when using hotwire the responsibilty of maintaining frontend state entirely
@@ -112,7 +112,7 @@ Methods `flatten?` and `flatten!` can be used in a view and controller:
 ```
 
 ### Sequence ID
-As a convenience a sequence ID id available which should always return a unique id
+As a convenience a sequence ID id is available which should always return a unique id
 (within the context of the model instance). To get the next sequence id use `next_seq_id`,
 to get the current sequence value use `seq_id`.
 You could use a sequence in a reducer function to make sure every added item is assigned a unique id.
