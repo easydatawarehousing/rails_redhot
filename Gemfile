@@ -17,12 +17,6 @@ group :development do
   gem "sprockets-rails"
 end
 
-# Your gem is dependent on dev or edge Rails. Once you can lock this
-# dependency down to a specific version, move it to your gemspec.
-
-# Use specific branch of Rails
-gem "rails", ">= 7.0.0.rc1"
-
 # Use sqlite3 as the database for Active Record
 gem "sqlite3", "~> 1.4"
 # Use the Puma web server [https://github.com/puma/puma]
