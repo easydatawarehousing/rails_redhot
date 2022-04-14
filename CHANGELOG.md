@@ -1,13 +1,15 @@
-# 0.1.0 - December 30, 2021
+# 0.1.1 - April 14, 2022
 
-[0.0.2]: https://github.com/easydatawarehousing/rails_redhot/compare/v0.0.2...v0.1.0
+- Fix calling flatten! multiple times erased initial state
+- Documentation updates
+- Demo application: Use Ruby 3.1.2, Rails 7.0.2
+
+# 0.1.0 - December 30, 2021
 
 - Documentation updates
 - Use Rails 7.0.0
 
 # 0.0.2 - December 10, 2021
-
-[0.0.2]: https://github.com/easydatawarehousing/rails_redhot/compare/v0.0.1...v0.0.2
 
 - Added testset
 - Polished demo application
