@@ -224,7 +224,7 @@ cd rails_redhot
 bundle install
 cd test/dummy
 rails db:setup
-rails server
+bin/dev
 ```
 
 Then open the [application](http://localhost:3000/foobars).
