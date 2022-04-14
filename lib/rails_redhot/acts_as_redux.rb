@@ -63,7 +63,7 @@ module RailsRedhot
         end
 
         define_method('flatten!') do
-          self.initial_state = state
+          self.initial_state = view_state
           self.state         = nil
           self.head          = -1
           self.actions       = []

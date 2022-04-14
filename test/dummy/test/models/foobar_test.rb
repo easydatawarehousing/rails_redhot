@@ -127,6 +127,12 @@ class FoobarStateTest < ActiveSupport::TestCase
     assert_equal @foobar.my_redux["initial_state"]["items"].length, 2
   end
 
+  test "can flatten multiple times" do
+    assert @foobar.flatten!
+    assert @foobar.flatten!
+    @foobar.save! # Make all keys strings
+    assert_equal @foobar.my_redux["initial_state"]["items"].length, 2
+  end
 
   test "can get the next sequence id" do
     assert_equal @foobar.seq_id, 3
