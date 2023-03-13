@@ -9,4 +9,7 @@
 /test/dummy/storage/
 /test/dummy/tmp/
 /test/dummy/app/assets/builds/
+/coverage/
 .ruby-version
+*.gem
+*__
