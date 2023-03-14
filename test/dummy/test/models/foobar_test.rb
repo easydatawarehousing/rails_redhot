@@ -1,5 +1,6 @@
 require "test_helper"
 
+# Run some test on a new store
 class FoobarNewTest < ActiveSupport::TestCase
   setup do
     @foobar = foobars(:foobar_new)
@@ -57,6 +58,7 @@ class FoobarNewTest < ActiveSupport::TestCase
 
   test "can dispatch an action" do
     assert @foobar.dispatch!({ type: "add", item: "Foo" })
+    assert @foobar.reduce_valid?
     @foobar.save! # Make all keys strings
     assert_equal @foobar.my_redux["head"], 0
     assert_equal @foobar.my_redux["actions"].length, 1
@@ -64,8 +66,24 @@ class FoobarNewTest < ActiveSupport::TestCase
     assert_equal @foobar.my_redux["actions"].first["item"], "Foo"
     assert_equal @foobar.my_redux["seq_id"], 1
   end
+
+
+  test "can signal a redux error" do
+    assert !@foobar.dispatch!({ type: "remove", item: "" })
+    assert !@foobar.reduce_valid?
+    assert_equal @foobar.reduce_errors.details.length, 1
+    assert_equal @foobar.reduce_errors.first.attribute, :base
+    assert_equal @foobar.reduce_errors.first.type, :blank
+  end
+
+  test "can signal a redux error with a message" do
+    assert !@foobar.dispatch!({ type: "add", item: "Too long" })
+    assert !@foobar.reduce_valid?
+    assert_equal @foobar.reduce_errors.full_messages.last, 'Item should have between 1 and 6 characters'
+  end
 end
 
+#  Run some tests on an existing store
 class FoobarStateTest < ActiveSupport::TestCase
   setup do
     @foobar = foobars(:foobar_state)
@@ -140,7 +158,7 @@ class FoobarStateTest < ActiveSupport::TestCase
   end
 
 
-  test "can dispatch an action" do
+  test "can dispatch an add action" do
     assert @foobar.dispatch!({ type: "add", item: "Foo" })
     @foobar.save! # Make all keys strings
     assert_equal @foobar.my_redux["head"], 2
@@ -153,6 +171,19 @@ class FoobarStateTest < ActiveSupport::TestCase
     assert_equal @foobar.view_state["items"].length, 3
   end
 
+  test "can dispatch a remove action" do
+    assert @foobar.dispatch!({ type: "remove", item: 1 })
+    @foobar.save! # Make all keys strings
+    assert_equal @foobar.my_redux["head"], 2
+    assert_equal @foobar.my_redux["actions"].length, 3
+    assert_equal @foobar.my_redux["actions"].last["type"], "remove"
+    assert_equal @foobar.my_redux["actions"].last["item"], 1
+    assert_equal @foobar.my_redux["seq_id"], 3
+
+    assert_equal @foobar.view_state["total"], 1
+    assert_equal @foobar.view_state["items"].length, 1
+  end
+
   test "can dispatch an action after redo" do
     assert @foobar.redo!
     assert @foobar.dispatch!({ type: "add", item: "Foo" })
@@ -162,5 +193,30 @@ class FoobarStateTest < ActiveSupport::TestCase
     assert_equal @foobar.my_redux["actions"].last["type"], "add"
     assert_equal @foobar.my_redux["actions"].last["item"], "Foo"
     assert_equal @foobar.my_redux["seq_id"], 5
+  end
+end
+
+# Run tests on a store with an initial state
+class FoobarInitialTest < ActiveSupport::TestCase
+  setup do
+    @foobar = foobars(:foobar_initial)
+  end
+
+  test "has something to undo" do
+    assert @foobar.undo?
+  end
+
+  test "can undo twice and keep initial state" do
+    assert @foobar.undo!
+    assert_equal @foobar.view_state["total"], 2
+    assert_equal @foobar.view_state["items"].length, 2
+
+    assert @foobar.undo!
+    assert_equal @foobar.view_state["total"], 1
+    assert_equal @foobar.view_state["items"].length, 1
+
+    assert !@foobar.undo!
+    assert_equal @foobar.view_state["total"], 1
+    assert_equal @foobar.view_state["items"].length, 1
   end
 end

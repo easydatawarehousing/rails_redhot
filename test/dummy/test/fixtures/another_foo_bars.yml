@@ -1,0 +1,3 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+another_foo_bar_new:
+  another_redux_store: "{\"initial_state\":{},\"head\":1,\"actions\":[{\"item\":\"Foo\"},{\"item\":\"Bar\"},{\"item\":\"Foo\"}],\"seq_id\":4,\"state\":{\"items\":[{\"id\":1,\"value\":\"Foo\",\"color\":\"green\"},{\"id\":2,\"value\":\"Bar\",\"color\":\"green\"}]}}"

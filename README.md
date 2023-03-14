@@ -109,15 +109,17 @@ class Foobar < ApplicationRecord
   private
 
   def my_redux_reducers
-  ->(state, action) {
-    case action[:type]
-    when :add
-      state[:total] += 1
-    when :remove
-      state[:total] -= 1
-    end
-    state
-  },
+    [
+      ->(state, action) {
+        case action[:type]
+        when :add
+          state[:total] += 1
+        when :remove
+          state[:total] -= 1
+        end
+        state
+      }
+    ]
   end
 end
 ```
@@ -128,7 +130,7 @@ Or specify your own reducer method:
 acts_as_redux :my_redux, reducers: :my_list_of_reducers
 
 def my_list_of_reducers
-# ...
+  # ...
 ```
 
 ### Undo/redo
@@ -148,7 +150,8 @@ In the controller action use the `undo!` method to perform the action.
 For redoing actions the similar methods `redo?`, `redo_action` and `redo!` are available.
 
 ### Flatten
-You can 'save' the current state. Essentially this flattens the list of actions to the initial state.
+You can 'save' the current state. Essentially this copies the current view state to the initial state
+and truncates the list of actions. Redo and undo are not possible until new actions are added.
 Methods `flatten?` and `flatten!` can be used in a view and controller:
 
 ```ruby
@@ -192,11 +195,86 @@ on the reducer functions you have implemented.
 For a full working example see the demo applications [view](test/dummy/app/views/foobars/_editor.html.erb)
 and [controller](test/dummy/app/controllers/foobars_controller.rb).
 
+### Adding errors
+Just like you can add validation errors on a model, you can add errors inside your reducer methods.
+There is an ActiveModel::Errors object for redux errors. It is separate from the one for the model and
+can be accessed via `reduce_errors`. Use it like this:
+
+```ruby
+def my_redux_reducers
+  @my_redux_reducers ||= [
+    -> (state, action) {
+      case action[:type]&.to_sym
+      when :add
+        if action[:item].length <= 6
+          state[:items] << { id: next_seq_id, value: CGI.escape(action[:item]) }
+        else
+          reduce_errors.add(:item, :too_long, { count: 6 })
+        end
+      end
+
+      state
+    }
+  ]
+end
+```
+
+Since ActiveModel does not know anything about attributes living inside your redux store
+using `reduce_errors.full_messages` won't work. You can create you own error to message translation or
+supply `:base` as the attribute name plus a message.
+See the [Rails documentation](https://api.rubyonrails.org/classes/ActiveModel/Errors.html#method-i-add).
+
+```ruby
+reduce_errors.add(:base, message: 'Item should have between 1 and 6 characters')
+```
+
+If any reduce error is present the `dispatch!` method will return false.
+To check if there are any errors present (to prevent saving the model) use:
+
+```ruby
+@foobar.reduce_valid?
+```
+
+In the controller you may want to reload the model if the dispatch action gave an error,
+so the old state is rendered.
+
+### After change callback
+Sometimes you want to do something after the redux store has changed.
+For instance to manipulate the view state based on all entries
+(the reducer methods only handle one action at the time).
+This callback method is called after `dispatch!`, `undo!` and `redo!`.
+In the model:
+
+```ruby
+class AnotherFooBar < ApplicationRecord
+  include RailsRedhot::ActsAsRedux
+
+  acts_as_redux :another_redux_store, after_change: :my_after_change_actions
+
+  private
+
+    def another_redux_store_reducers
+      [
+        -> (state, _action) {
+          state[:items] ||= []
+          state
+        },
+        # ...
+      ]
+    end
+
+    def my_after_change_actions
+      # Do something with the view_state
+      # view_state[:items].each { do_something }
+    end
+end
+```
+
 ## Security
-Care must be taken to not introduce any vulnerabilities.
+Care must be taken to not introduce any vulnerabilities!
 When passing values from the request to the reducer functions treat any string or complex
-values as potential candidates for SQL injection. Either sanitize the value or `CGI.escape`
-a string before adding it to the redux store.
+values as potential candidates for SQL injection. Either sanitize or `CGI.escape`
+strings before adding them to the redux store.
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -242,10 +320,9 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Remarks
 
-- Developed using Ruby 3.0.3
 - This gem is not designed to handle very large lists of actions and state.
-  When calling `undo` the state is rebuilt from scratch
-  If the list of actions to process is large this would become slow.
+  When calling `undo` the state is rebuilt from scratch,
+  if the list of actions to process is large this would become slow.
   One would need add 'savepoints' that regularly save the state and rebuild
   the current state from that point forward
 - Stricly speaking, hotwire is not needed for this gem to work. Just using

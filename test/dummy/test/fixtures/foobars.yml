@@ -4,3 +4,6 @@ foobar_new:
 
 foobar_state:
   my_redux: "{\"initial_state\":{},\"head\":1,\"actions\":[{\"type\":\"add\",\"item\":\"Foo\"},{\"type\":\"add\",\"item\":\"Bar\"},{\"type\":\"add\",\"item\":\"Custom\"}],\"seq_id\":3,\"state\":{\"total\":2,\"items\":[{\"id\":1,\"value\":\"Foo\"},{\"id\":2,\"value\":\"Bar\"}]}}"
+
+foobar_initial:
+  my_redux: "{\"initial_state\":{\"total\":1, \"items\":[{\"id\":1, \"value\":\"Foo\"}]},\"head\":1,\"actions\":[{\"type\":\"add\",\"item\":\"Bar\"},{\"type\":\"add\",\"item\":\"Custom\"}],\"seq_id\":4,\"state\":{\"total\":3,\"items\":[{\"id\":1,\"value\":\"Foo\"},{\"id\":2,\"value\":\"Bar\"},{\"id\":3,\"value\":\"Custom\"}]}}"

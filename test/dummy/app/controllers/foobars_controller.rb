@@ -53,7 +53,7 @@ class FoobarsController < ApplicationController
     when :add_bar
       do_dispatch(:add, 'Bar')
     when :add_custom
-      do_dispatch(:add, foobar_update_action_params[:custom][0..5].strip.capitalize)
+      do_dispatch(:add, foobar_update_action_params[:custom].strip.capitalize)
     when :remove
       do_dispatch(:remove, foobar_update_action_params[:action_id]&.to_i)
     when :undo
@@ -64,7 +64,8 @@ class FoobarsController < ApplicationController
       do_flatten
     end
 
-    @foobar.save! if @foobar.changed?
+    @foobar.reload if !@foobar.reduce_valid?
+    @foobar.save!  if @foobar.changed?
 
     pp_acts_as_redux
 
@@ -73,11 +74,14 @@ class FoobarsController < ApplicationController
   end
 
   private
+
     def do_dispatch(type, value)
-      if value.present? && @foobar.dispatch!(type: type, item: value)
+      return if value.blank?
+
+      if @foobar.dispatch!(type: type, item: value)
         'Updated !'
       else
-        'Invalid item'
+        @foobar.reduce_errors.full_messages.join('. ')
       end
     end
 

@@ -10,12 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_10_151849) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_14_093029) do
+  create_table "another_foo_bars", force: :cascade do |t|
+    t.text "another_redux_store"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "foobars", force: :cascade do |t|
     t.text "my_redux"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
