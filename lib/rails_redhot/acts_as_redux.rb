@@ -8,6 +8,7 @@ module RailsRedhot
     class_methods do
       def acts_as_redux(store_name, options = {})
         reducers = options.key?(:reducers) ? options[:reducers] : "#{store_name}_reducers".to_sym
+        reducer_errors = nil
 
         store(store_name, accessors: [ :initial_state, :state, :actions, :head, :seq_id ], coder: JSON)
 
@@ -43,8 +44,6 @@ module RailsRedhot
             self.state = initial_state
             if head > -1
               actions[0..head].each { |action| perform_reduce(action) }
-            else
-              perform_reduce(initial_state)
             end
             true
           else
@@ -70,6 +69,14 @@ module RailsRedhot
           true
         end
 
+        define_method('reduce_errors') do
+          reducer_errors
+        end
+
+        define_method('reduce_valid?') do
+          reducer_errors.details.empty?
+        end
+
         define_method('next_seq_id') do
           self.seq_id += 1
         end
@@ -81,10 +88,14 @@ module RailsRedhot
           self.actions << action
           self.head += 1
           perform_reduce(action)
-          true
+          reduce_valid?
         end
 
         # private
+
+          define_method('reset_reduce_errors') do
+            reducer_errors = ActiveModel::Errors.new(self)
+          end
 
           define_method('load_store') do
             self.initial_state ||= {}
@@ -92,7 +103,12 @@ module RailsRedhot
             self.head          ||= -1
             self.actions       ||= []
             self.seq_id        ||= 0
-            perform_reduce({}) if state.blank? && initial_state.blank?
+
+            if state.blank? && initial_state.blank?
+              perform_reduce({})
+            else
+              reset_reduce_errors
+            end
           end
 
           define_method('all_reducers') do
@@ -100,6 +116,8 @@ module RailsRedhot
           end
 
           define_method('perform_reduce') do |action|
+            reset_reduce_errors
+
             self.state = all_reducers.reduce(
               view_state.dup.deep_symbolize_keys
             ) do |current_state, reducer|
