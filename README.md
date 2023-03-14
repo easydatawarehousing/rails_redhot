@@ -109,15 +109,17 @@ class Foobar < ApplicationRecord
   private
 
   def my_redux_reducers
-  ->(state, action) {
-    case action[:type]
-    when :add
-      state[:total] += 1
-    when :remove
-      state[:total] -= 1
-    end
-    state
-  },
+    [
+      ->(state, action) {
+        case action[:type]
+        when :add
+          state[:total] += 1
+        when :remove
+          state[:total] -= 1
+        end
+        state
+      }
+    ]
   end
 end
 ```
@@ -128,7 +130,7 @@ Or specify your own reducer method:
 acts_as_redux :my_redux, reducers: :my_list_of_reducers
 
 def my_list_of_reducers
-# ...
+  # ...
 ```
 
 ### Undo/redo
@@ -148,7 +150,8 @@ In the controller action use the `undo!` method to perform the action.
 For redoing actions the similar methods `redo?`, `redo_action` and `redo!` are available.
 
 ### Flatten
-You can 'save' the current state. Essentially this flattens the list of actions to the initial state.
+You can 'save' the current state. Essentially this copies the current view state to the initial state
+and truncates the list of actions. Redo and undo are not possible until new actions are added.
 Methods `flatten?` and `flatten!` can be used in a view and controller:
 
 ```ruby
@@ -234,6 +237,38 @@ To check if there are any errors present (to prevent saving the model) use:
 
 In the controller you may want to reload the model if the dispatch action gave an error,
 so the old state is rendered.
+
+### After change callback
+Sometimes you want to do something after the redux store has changed.
+For instance to manipulate the view state based on all entries
+(the reducer methods only handle one action at the time).
+This callback method is called after `dispatch!`, `undo!` and `redo!`.
+In the model:
+
+```ruby
+class AnotherFooBar < ApplicationRecord
+  include RailsRedhot::ActsAsRedux
+
+  acts_as_redux :another_redux_store, after_change: :my_after_change_actions
+
+  private
+
+    def another_redux_store_reducers
+      [
+        -> (state, _action) {
+          state[:items] ||= []
+          state
+        },
+        # ...
+      ]
+    end
+
+    def my_after_change_actions
+      # Do something with the view_state
+      # view_state[:items].each { do_something }
+    end
+end
+```
 
 ## Security
 Care must be taken to not introduce any vulnerabilities!

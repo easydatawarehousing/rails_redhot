@@ -5,6 +5,7 @@ class Foobar < ApplicationRecord
   private
 
     def my_redux_reducers
+      # Memoize reducers
       @my_redux_reducers ||= [
         # Initialize the store if needed
         -> (state, _action) {

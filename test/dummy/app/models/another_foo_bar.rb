@@ -7,7 +7,7 @@ class AnotherFooBar < ApplicationRecord
   private
 
     def my_redux_reducers
-      @my_redux_reducers ||= [
+      [
         # Initialize the store if needed
         -> (state, _action) {
           state[:items] ||= []
