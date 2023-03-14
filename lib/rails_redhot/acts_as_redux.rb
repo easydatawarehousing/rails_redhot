@@ -87,7 +87,7 @@ module RailsRedhot
 
           self.actions << action
           self.head += 1
-          perform_reduce(action)
+          perform_reduce(action.deep_dup.deep_symbolize_keys)
           reduce_valid?
         end
 
@@ -119,9 +119,9 @@ module RailsRedhot
             reset_reduce_errors
 
             self.state = all_reducers.reduce(
-              view_state.dup.deep_symbolize_keys
+              view_state.deep_dup.deep_symbolize_keys
             ) do |current_state, reducer|
-              reducer.call(current_state, action.deep_symbolize_keys)
+              reducer.call(current_state, action)
             end
           end
 
