@@ -9,6 +9,7 @@ module RailsRedhot
       def acts_as_redux(store_name, options = {})
         reducers = options.key?(:reducers) ? options[:reducers] : "#{store_name}_reducers".to_sym
         reducer_errors = nil
+        reducer_after_change = options[:after_change]
 
         store(store_name, accessors: [ :initial_state, :state, :actions, :head, :seq_id ], coder: JSON)
 
@@ -44,6 +45,7 @@ module RailsRedhot
             self.state = initial_state
             if head > -1
               actions[0..head].each { |action| perform_reduce(action) }
+              self.send(reducer_after_change) if reducer_after_change
             end
             true
           else
@@ -55,6 +57,7 @@ module RailsRedhot
           if redo?
             self.head += 1
             perform_reduce(actions[head])
+            self.send(reducer_after_change) if reducer_after_change
             true
           else
             false
@@ -88,6 +91,7 @@ module RailsRedhot
           self.actions << action
           self.head += 1
           perform_reduce(action.deep_dup.deep_symbolize_keys)
+          self.send(reducer_after_change) if reducer_after_change
           reduce_valid?
         end
 

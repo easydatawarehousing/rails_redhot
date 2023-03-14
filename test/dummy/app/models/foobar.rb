@@ -7,14 +7,14 @@ class Foobar < ApplicationRecord
     def my_redux_reducers
       @my_redux_reducers ||= [
         # Initialize the store if needed
-        ->(state, _action) {
+        -> (state, _action) {
           state[:total]   ||= 0
           state[:items]   ||= []
 
           state
         },
         # Update total
-        ->(state, action) {
+        -> (state, action) {
           case action[:type]&.to_sym
           when :add
             state[:total] += 1
@@ -34,7 +34,7 @@ class Foobar < ApplicationRecord
               reduce_errors.add(:base, message: 'Item should have between 1 and 6 characters')
             end
           when :remove
-            if action[:item].blank? # Only used for testing reduce_errors
+            if action[:item].blank? # Simple check for testing reduce_errors
               reduce_errors.add(:base, :blank)
             else
               state[:items].delete_if do |item|
