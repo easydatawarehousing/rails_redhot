@@ -1,3 +1,7 @@
+# 0.3.0 - November 26, 2024
+
+- Make gem compatible with current Rails 7 and 8 versions
+
 # 0.2.0 - March 14, 2023
 
 - Demo application: Use Ruby 3.2.0, Rails 7.0.4.2
