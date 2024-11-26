@@ -7,7 +7,7 @@
 <div class="my-10 border-4 rounded border-black rounded-2xl bg-grey-200 p-4">
   <p>Current items:</p>
 
-  <%- if foobar.view_state['total'] == 0 %>
+  <%- if foobar.view_state.blank? || foobar.view_state['total'].zero? %>
     <p>There are no foobar items yet, please add one by using the buttons below</p>
   <% else %>
     <div class="flex flex-row flex-wrap">
