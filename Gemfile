@@ -18,11 +18,16 @@ group :development do
 end
 
 # Use sqlite3 as the database for Active Record
-gem "sqlite3", "~> 1.4"
+gem "sqlite3"
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.5"
+gem "puma"
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 # Start debugger with binding.b -- Read more: https://github.com/ruby/debug
 # gem "debug", ">= 1.0.0", group: %i[ development test ]
-gem 'simplecov'
+gem "simplecov"
+
+gem "base64"
+gem "bigdecimal"
+gem "mutex_m"
+gem "drb"
